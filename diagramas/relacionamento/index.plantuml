@@ -1,0 +1,51 @@
+@startuml
+entity "Usuario" {
+    +int id
+    +String nome
+    +String email
+    +String senha
+}
+
+entity "Assunto" {
+    +int id
+    +String titulo
+    +String descricao
+    +String imagemUrl
+}
+
+entity "Conteudo" {
+    +int id
+    +String texto
+    +String imagemUrl
+    +String videoUrl
+    +int assuntoId
+}
+
+entity "Exercicio" {
+    +int id
+    +String titulo
+    +int conteudoId
+}
+
+entity "Questao" {
+    +int id
+    +String pergunta
+    +List<String> opcoes
+    +String respostaCorreta
+    +int exercicioId
+}
+
+entity "Resultado" {
+    +int id
+    +int usuarioId
+    +int exercicioId
+    +int acertos
+    +int erros
+}
+
+Usuario ||--o| Resultado : tem
+Assunto ||--o| Conteudo : tem
+Conteudo ||--o| Exercicio : tem
+Exercicio ||--o| Questao : tem
+Usuario ||--o| Resultado : realiza
+@enduml

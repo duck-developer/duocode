@@ -1,0 +1,57 @@
+@startuml
+class Usuario {
+    +int id
+    +String nome
+    +String email
+    +String senha
+    +login(email: String, senha: String): boolean
+    +registrar(nome: String, email: String, senha: String): boolean
+}
+
+class Assunto {
+    +int id
+    +String titulo
+    +String descricao
+    +String imagemUrl
+    +listarConteudos(): List<Conteudo>
+}
+
+class Conteudo {
+    +int id
+    +String texto
+    +String imagemUrl
+    +String videoUrl
+    +int assuntoId
+    +listarExercicios(): List<Exercicio>
+}
+
+class Exercicio {
+    +int id
+    +String titulo
+    +int conteudoId
+    +listarQuestoes(): List<Questao>
+    +realizarQuiz(): Resultado
+}
+
+class Questao {
+    +int id
+    +String pergunta
+    +List<String> opcoes
+    +String respostaCorreta
+    +int exercicioId
+}
+
+class Resultado {
+    +int id
+    +int usuarioId
+    +int exercicioId
+    +int acertos
+    +int erros
+    +calcularResultado(): void
+}
+
+Assunto "1" -- "0..*" Conteudo : contém
+Conteudo "1" -- "0..*" Exercicio : contém
+Exercicio "1" -- "0..*" Questao : contém
+Usuario "1" -- "0..*" Resultado : tem
+@enduml

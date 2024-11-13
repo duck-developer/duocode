@@ -1,0 +1,91 @@
+@startuml
+actor Usuario
+participant "Frontend (App)" as frontend
+participant "Backend (Serviço)" as backend
+participant "Banco de Dados" as db
+
+== Fluxo de Registro de Usuario ==
+Usuario -> frontend: Preenche nome, email e senha
+frontend -> backend: Envia dados de registro (nome, email, senha)
+backend -> db: Verifica se o email já existe
+db --> backend: Retorna resultado da busca
+
+alt Email já cadastrado
+    backend -> frontend: Retorna erro (email já cadastrado)
+    frontend -> Usuario: Exibe mensagem de erro
+else Email disponível
+    backend -> db: Armazena novo usuário
+    db --> backend: Confirma armazenamento
+    backend -> frontend: Confirma cadastro com sucesso
+    frontend -> Usuario: Exibe mensagem de sucesso
+end
+
+== Fluxo de Login de Usuario ==
+Usuario -> frontend: Preenche email e senha
+frontend -> backend: Envia dados de login (email, senha)
+backend -> db: Verifica credenciais do usuário
+
+
+alt Login bem-sucedido
+    db --> backend: Retorna usuário
+    backend -> frontend: Retorna dados do usuário
+    frontend -> Usuario: Exibe tela inicial do app
+else Email ou senha incorretos
+    db --> backend: Retorna Null
+    backend -> frontend: Retorna erro (email ou senha incorretos)
+    frontend -> Usuario: Exibe mensagem de erro
+end
+
+== Fluxo de Acesso ao Conteúdo ==
+Usuario -> frontend: Acessa tela de assuntos
+frontend -> backend: Solicita lista de assuntos
+backend -> db: Busca todos os assuntos
+db -> backend: Retorna lista de assuntos
+backend -> frontend: Envia lista de assuntos
+frontend -> Usuario: Exibe lista de assuntos
+
+Usuario -> frontend: Seleciona um assunto 
+frontend -> backend: Solicita conteúdo do assunto
+backend -> db: Busca conteúdo relacionado ao assunto
+db --> backend: Retorna conteúdo (texto, imagem ou vídeo)
+backend --> frontend: Envia conteúdo
+frontend -> Usuario: Exibe conteúdo sobre o assunto
+frontend -> Usuario: Exibe botao para acessar exercicios
+
+== Fluxo de Acesso ao Exercício ==
+Usuario -> frontend: Clica no botão de Exercícios
+frontend -> backend: Solicita lista de exercícios 
+backend -> db: Busca lista de exercícios  
+db --> backend: Retorna lista de exercícios
+backend -> frontend: Envia lista de exercícios
+frontend -> Usuario: Exibe lista de exercicio (Exercicio 1, Exercicio 2...)
+Usuario -> frontend: Seleciona um exercício específico
+frontend -> backend: Solicita questões do exercício
+backend -> db: Busca questões do exercício
+db --> backend: Retorna as questões
+backend -> frontend: Envia a primeira questão
+frontend -> Usuario: Exibe a primeira questão
+Usuario -> frontend: Responde a questão
+frontend -> backend: Envia resposta da questão
+
+alt Resposta correta
+    backend -> frontend: Marca questão como verde (acertou)
+else Resposta incorreta
+    backend -> frontend: Marca questão como vermelha (errou)
+end
+
+frontend -> Usuario: Exibe feedback da questão (cor da questão)
+
+Usuario -> frontend: Avança para próxima questão
+frontend -> backend: Solicita próxima questão
+backend -> db: Busca próxima questão
+db --> backend: Retorna próxima questão
+backend -> frontend: Envia próxima questão
+frontend -> Usuario: Exibe próxima questão
+
+Usuario -> frontend: Repete até terminar as 10 questões
+frontend -> backend: Envia resultados finais (acertos e erros)
+backend -> frontend: Retorna resultados
+frontend -> Usuario: Exibe acertos e erros
+
+@enduml
